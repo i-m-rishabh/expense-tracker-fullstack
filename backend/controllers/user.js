@@ -15,6 +15,7 @@ async function createUser(req, res) {
             email: email,
             phone: phone,
             password: hash,
+            isPremiumUser:false,
         })
             .then(user => {
                 res.status(201).json({"success":true});

@@ -5,6 +5,7 @@ const cors = require('cors');
 const sequelize = require('./database/db');
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
+const premiumRoutes = require('./routes/premium');
 // const {associatedModels} = require('./models/associations');
 
 
@@ -15,6 +16,7 @@ app.use(express.urlencoded({extended:true}));
 
 app.use('/user',userRoutes);
 app.use('/expense', expenseRoutes);
+app.use('/premium', premiumRoutes);
 
 (async function(){
     sequelize.sync()
