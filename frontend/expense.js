@@ -114,6 +114,9 @@ async function deleteExpense(event){
 }
 function redirectToLogin() {
     window.location.replace('signin.html');
+    localStorage.removeItem('token');
+    localStorage.removeItem('isPremiumUser');
 }
+
 const expenseList = document.getElementById('expense-list');
 document.addEventListener("DOMContentLoaded", getAllExpenses);

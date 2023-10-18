@@ -36,11 +36,11 @@ async function updatePaymentStatus(req, res){
         const order = await Order.findOne({where:{order_id}})
     
         const [response1, response2] = await Promise.all([
-            order.update({payment_id:payment_id, status: (payment_id? 'SUCCESSFUL': 'FAILED')}),
+            order.update({payment_id:payment_id, status:'SUCCESSFUL'}),
             req.user.update({isPremiumUser:true}),
         ]);
 
-        res.status(200).json({success:true, message:payment_id?'successfully purchased premium membership':'payment failed'});
+        res.status(200).json({success:true, message:'successfully purchased premium membership'});
 
     }catch(err){
         console.log(err);

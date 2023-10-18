@@ -15,10 +15,11 @@ async function createUser(req, res) {
             email: email,
             phone: phone,
             password: hash,
-            isPremiumUser:false,
+            isPremiumUser: false,
+            totalExpense: 0,
         })
             .then(user => {
-                res.status(201).json({"success":true});
+                res.status(201).json({ "success": true });
             })
             .catch(err => {
                 // console.log(err.errors[0].message);
@@ -27,8 +28,8 @@ async function createUser(req, res) {
     })
 }
 
-function jwtToken(id){
-    const token = jwt.sign({userId:id}, 'secret_key');
+function jwtToken(id) {
+    const token = jwt.sign({ userId: id }, 'secret_key');
     return token;
 }
 
@@ -43,10 +44,10 @@ function signinUser(req, res) {
             if (user.length === 0) {
                 res.status(401).json('email does not exist');
             } else {
-                bcrypt.compare(password, user[0].password, function(err, result){
-                    if(result){
-                        res.status(200).json({success:true, token:jwtToken(user[0].id)});
-                    }else{
+                bcrypt.compare(password, user[0].password, function (err, result) {
+                    if (result) {
+                        res.status(200).json({ success: true, token: jwtToken(user[0].id), isPremiumUser: user[0].isPremiumUser });
+                    } else {
                         res.status(401).json("incorrect password");
                     }
                 })
@@ -58,7 +59,26 @@ function signinUser(req, res) {
         })
 }
 
+async function getUsers(req, res) {
+    try {
+        const users = await User.findAll()
+        if(!users){
+            throw new Error('error in getting userDetails');
+        }
+        console.log(users);
+        const userDetails = users.map(user => {
+            return [user.username, user.totalExpense];
+        });
+        res.status(200).json({success:true, data:userDetails});
+    } catch (err) {
+        console.log(err);
+        res.json(500).json({ success: false, message: 'error in getting userDetails', error: err });
+    }
+    // res.json({success:true});
+}
+
 module.exports = {
     createUser,
     signinUser,
+    getUsers,
 }

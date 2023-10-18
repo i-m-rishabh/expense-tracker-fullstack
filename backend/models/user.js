@@ -27,6 +27,10 @@ const User = sequelize.define('user',{
         type:Sequelize.BOOLEAN,
         allowNull: true,
     },
+    totalExpense:{
+        type:Sequelize.INTEGER,
+        allowNull: true,
+    },
 });
 
 User.hasMany(Expense);

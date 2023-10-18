@@ -5,15 +5,15 @@ async function getAllExpenses(req, res) {
     const userId = req.user.id;
     console.log(userId);
     // const userId = req.params.userId;
-    
-    Expense.findAll({where:{"userId":userId}})
-    .then(expenses=>{
-        res.json(expenses);
-    })
-    .catch(err=>{
-        console.log(err);
-        res.json({"error in getting all expenses":err});
-    })
+
+    Expense.findAll({ where: { "userId": userId } })
+        .then(expenses => {
+            res.json(expenses);
+        })
+        .catch(err => {
+            console.log(err);
+            res.json({ "error in getting all expenses": err });
+        })
 
     // User.findByPk(userId)
     // .then(user => {
@@ -47,24 +47,30 @@ async function getAllExpenses(req, res) {
 }
 
 async function addExpense(req, res) {
-    const {amount, description, category } = req.body;
+    const { amount, description, category } = req.body;
     const userId = req.user.id;
     // console.log([amount, description, category]);
 
     User.findByPk(userId)
-    .then(user => {
-        user.createExpense({
-            amount,
-            description,
-            category
+        .then(user => {
+            user.createExpense({
+                amount,
+                description,
+                category
+            })
+                .then(expense => {
+                    user.update({ totalExpense: user.totalExpense + (+amount) })
+                        .then(() => {
+                            res.status(200).json({ 'success': true, 'response': expense });
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        })
+                })
+                .catch(err => {
+                    res.status(500).json({ 'success': false, 'response': err });
+                })
         })
-        .then(expense =>{
-            res.status(200).json({ 'success': true, 'response': expense });
-        })
-        .catch(err => {
-            res.status(500).json({ 'success': false, 'response': err });
-        })
-    })
 
     // Expense.create({
     //     amount,
@@ -87,25 +93,29 @@ async function deleteExpense(req, res) {
     User.findByPk(userId)
         .then(user => {
             // console.log(user);
-            user.getExpenses({where: {'id': id}})
-            .then(expenses =>{
-                // console.log(expenses);
-                if(expenses.length === 0){
-                    res.status(400).json({'success':false, "response":'expense not found'});
-                }else{
-                    user.removeExpense(expenses[0])
-                    .then(() => {
-                        res.status(200).json({"success":true, "response": "successfully deleted"})
-                    })
-                    .catch(err => {
-                        // console.log(err);
-                        res.status(500).json({"success":false, "response":"error in removig expense", error: err});
-                    })
-                }
-            })
-            .catch(err => {
-                res.status(500).json({success:false, response:"error in getting expenses", error:err})
-            })
+            user.getExpenses({ where: { 'id': id } })
+                .then(expenses => {
+                    // console.log(expenses);
+                    if (expenses.length === 0) {
+                        res.status(400).json({ 'success': false, "response": 'expense not found' });
+                    } else {
+                        user.update({ totalExpense: user.totalExpense - (expenses[0].amount) })
+                            .then(() => {
+                                user.removeExpense(expenses[0])
+                                    .then(() => {
+                                        res.status(200).json({ "success": true, "response": "successfully deleted" })
+                                    })
+                                    .catch(err => {
+                                        // console.log(err);
+                                        res.status(500).json({ "success": false, "response": "error in removig expense", error: err });
+                                    })
+                            })
+
+                    }
+                })
+                .catch(err => {
+                    res.status(500).json({ success: false, response: "error in getting expenses", error: err })
+                })
         })
         .catch(err => {
             // console.log(err);
