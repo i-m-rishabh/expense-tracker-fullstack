@@ -28,8 +28,8 @@ async function createUser(req, res) {
     })
 }
 
-function jwtToken(id) {
-    const token = jwt.sign({ userId: id }, 'secret_key');
+function jwtToken(id, isPremiumUser) {
+    const token = jwt.sign({ userId: id, isPremiumUser:isPremiumUser }, 'secret_key');
     return token;
 }
 
@@ -46,7 +46,8 @@ function signinUser(req, res) {
             } else {
                 bcrypt.compare(password, user[0].password, function (err, result) {
                     if (result) {
-                        res.status(200).json({ success: true, token: jwtToken(user[0].id), isPremiumUser: user[0].isPremiumUser });
+                        // res.status(200).json({ success: true, token: jwtToken(user[0].id), isPremiumUser: user[0].isPremiumUser });
+                        res.status(200).json({ success: true, token: jwtToken(user[0].id, user[0].isPremiumUser ) });
                     } else {
                         res.status(401).json("incorrect password");
                     }

@@ -1,11 +1,27 @@
 
 const token = localStorage.getItem('token');
 
+function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+}
+
 function activatePremium() {
-    if (JSON.parse(localStorage.getItem('isPremiumUser'))) {
+    const decodedToken = parseJwt(token);
+    const isPremiumUser = decodedToken.isPremiumUser;
+    if (isPremiumUser) {
         document.getElementById('buy-premium').style.display = 'none';
         document.getElementById('premium-text').style.display = 'block';
     }
+    // if (JSON.parse(localStorage.getItem('isPremiumUser'))) {
+    //     document.getElementById('buy-premium').style.display = 'none';
+    //     document.getElementById('premium-text').style.display = 'block';
+    // }
 }
 
 document.getElementById('buy-premium').onclick = async function buyPremium(e) {
@@ -22,7 +38,7 @@ document.getElementById('buy-premium').onclick = async function buyPremium(e) {
         "key": data.key_id,
         "order_id": data.order.id,
         "handler": async function (response) {
-            alert(['paymentId', response.razorpay_payment_id]);
+            // alert(['paymentId', response.razorpay_payment_id]);
             const response2 = await fetch('http://localhost:3000/premium/updatePaymentStatus', {
                 method: 'POST',
                 body: JSON.stringify({
@@ -37,10 +53,15 @@ document.getElementById('buy-premium').onclick = async function buyPremium(e) {
             if (!response2.ok) {
                 alert('error in updating payment status');
             } else {
+                const data = await response2.json();
+                const newToken = data.token;
+
                 alert('you are a premium member now');
-                localStorage.setItem('isPremiumUser', true);
+                localStorage.setItem('token', newToken);
                 document.getElementById('buy-premium').style.display = 'none';
                 document.getElementById('premium-text').style.display = 'block';
+                // localStorage.setItem('isPremiumUser', true);
+                
             }
         }
     }
@@ -77,14 +98,14 @@ document.getElementById('show-leaderboard-button').onclick = async function () {
         const users = data.data;
 
         //sort the data by amount
-        users.sort((a, b)=>{
+        users.sort((a, b) => {
             return b[1] - a[1];
         });
         // console.log(users);
-        
+
         const list = document.getElementById('leaderboard-list');
         list.innerHTML = '';
-        users.map((user)=>{
+        users.map((user) => {
             const li = document.createElement('li');
             const textNode = document.createTextNode(`${user[0]}  ${user[1]}`);
             li.appendChild(textNode);

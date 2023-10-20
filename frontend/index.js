@@ -61,7 +61,7 @@ async function loginUser(event) {
         const data = await response.json();
         // alert(data.token);
         localStorage.setItem('token', data.token);
-        localStorage.setItem('isPremiumUser', data.isPremiumUser);
+        // localStorage.setItem('isPremiumUser', data.isPremiumUser);
         redirectToMainPage();
     } catch (err) {
         console.log(err)
