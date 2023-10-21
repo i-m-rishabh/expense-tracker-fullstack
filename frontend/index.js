@@ -67,6 +67,38 @@ async function loginUser(event) {
         console.log(err)
     }
 }
+async function resetPassword(event) {
+    event.preventDefault();
+    alert('reseting password');
+    const email = event.target.email.value;
+    console.log(email);
+
+
+    //calling api
+    try {
+        const response = await fetch('http://localhost:3000/password/forget-password', {
+            method: 'POST',
+            body: JSON.stringify({
+                email: email
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        if(!response.ok){
+            throw new Error('something went wrong');
+        }
+        const data = await response.json();
+        console.log(data);
+    // redirectToLogin();
+
+    } catch(err){
+        console.log(err);
+    }
+    
+    
+
+}
 
 function redirectToMainPage() {
     window.location.replace('expense.html');
@@ -76,6 +108,9 @@ function redirectToSignup() {
 }
 function redirectToLogin() {
     window.location.replace('signin.html');
+}
+function redirectToForgetPassword() {
+    window.location.replace('forget-password.html');
 }
 
 

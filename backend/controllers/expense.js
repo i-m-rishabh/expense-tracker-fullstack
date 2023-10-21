@@ -114,7 +114,7 @@ async function deleteExpense(req, res) {
     //         res.status(500).json({ success: false, response: "error in finding user", error: err })
     //     })
 
-    const t = sequelize.transaction();
+    const t = await sequelize.transaction();
 
     try {
         const userId = req.user.id;
@@ -126,16 +126,16 @@ async function deleteExpense(req, res) {
         const expenses = await user.getExpenses({ where: { 'id': id } })
         // console.log(expenses);
         if (expenses.length === 0) {
-            res.status(400).json({ 'success': false, "response": 'expense not found' });
+            res.status(400).json({ success: false, message: 'expense not found' });
         } else {
             await user.update({ totalExpense: user.totalExpense - (expenses[0].amount) }, {transaction: t})
-            await user.removeExpense(expenses[0])
-            res.status(200).json({ "success": true, "response": "successfully deleted" }, {transaction: t})
+            await user.removeExpense(expenses[0], {transaction: t});
+            res.status(200).json({ success: true, message: "successfully deleted" })
             
             await t.commit();
         }
     } catch (err) {
-        console.log(err);
+        console.err(err);
         await t.rollback();
         res.status(500).json({ success: false, error: err })
     }
