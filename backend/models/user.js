@@ -3,6 +3,7 @@ const Sequelize = require('sequelize');
 
 const Expense = require('./expense');
 const Order = require('./order');
+const forgetPasswordRequest = require('./forgetPasswordRequests');
 
 const User = sequelize.define('user',{
     username:{
@@ -38,5 +39,8 @@ Expense.belongsTo(User);
 
 User.hasMany(Order);
 Order.belongsTo(User);
+
+User.hasMany(forgetPasswordRequest);
+forgetPasswordRequest.belongsTo(User);
 
 module.exports = User;
