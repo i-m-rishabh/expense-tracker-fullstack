@@ -34,7 +34,7 @@ const purchasePremium = (req, res) => {
 }
 
 async function updatePaymentStatus(req, res){
-    const t = sequelize.transaction();
+    const t = await sequelize.transaction();
     try{
         const {order_id, payment_id} = req.body;
         const order = await Order.findOne({where:{order_id}}, {transaction: t})

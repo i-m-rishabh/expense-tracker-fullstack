@@ -1,12 +1,15 @@
+const sequelize = require('../database/db');
+
 const Sib = require('sib-api-v3-sdk');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 const User = require('../models/user');
 const forgetPasswordRequest = require('../models/forgetPasswordRequests');
+const { v4: uuidv4 } = require('uuid');
 
 const sendResetLink = async (uuid) => {
-    // const email = req.body.email;
-    // console.log(email);
+    const email = req.body.email;
+    console.log(email);
 
     const client = Sib.ApiClient.instance;
     const apiKey = client.authentications['api-key']
@@ -21,7 +24,8 @@ const sendResetLink = async (uuid) => {
 
     const receivers = [
         {
-            email: 'rishabhpandey12798@gmail.com' //change it to user's email who forgets password
+            // email: 'rishabhpandey12798@gmail.com' //change it to user's email who forgets password
+            email: email,
         }
     ]
 
@@ -45,9 +49,11 @@ const forgetPassword = async (req, res) => {
 
         const user = await User.findOne({ where: { email: email } })
 
-        const userId = user.id;
-        //change it to uuid its secure
-        const uuid = Math.random();
+        // const userId = user.id;
+        //changing it to uuid its secure
+        // const uuid = Math.random();
+        const uuid = uuidv4();
+        console.log(uuid);
 
         const response = await user.createForgetPasswordRequest({
             id: uuid,
@@ -88,39 +94,36 @@ const resetPassword = async (req, res) => {
     }
 }
 
+//this function will be triggers when user will submit the new-password form
 const changePassword = async (req, res) => {
     const uuid = req.params.uuid;
     const newPassword = req.body.newPassword;
     // console.log(uuid);
     // console.log(newPassword);
 
+    const t = await sequelize.transaction();
     try {
         const request = await forgetPasswordRequest.findOne({ where: { id: uuid } })
         if (request.isActive) {
             //update status
-            await request.update({isActive:false });
+            await request.update({isActive:false },{ transaction:t});
             //also update password
             const user = await User.findOne({where:{id:request.userId}});
-            //........encrypt the password
-            await user.update({password: await encryptPassword(newPassword)});
+
+            await user.update({password: await encryptPassword(newPassword)},{transaction:t});
             res.status(200).json({ success: true, message: 'password updated successfully' });
         } else {
             res.status(500).json({ success: false, message: 'link is expired. Request a new one.' });
         }
+        await t.commit();
     } catch (err) {
+        await t.rollback();
         console.log(err);
         res.status(500).json({ success: false, message: 'error in updating password', error: err });
     }
 }
 
 async function encryptPassword(password){
-    // let encryptedPassword ;
-    // bcrypt.hash(password, 15, function(err, hash) {
-    //     // Store hash in your password DB.
-    //     encryptedPassword = hash;
-    // });
-    // console.log(encryptedPassword);
-    // return encryptedPassword;
     try{
         const hash = await bcrypt.hash(password, 10);
         console.log(hash);
