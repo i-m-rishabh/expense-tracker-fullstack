@@ -17,6 +17,7 @@ function activatePremium() {
     if (isPremiumUser) {
         document.getElementById('buy-premium').style.display = 'none';
         document.getElementById('premium-text').style.display = 'block';
+        document.getElementById('generate-report-button').style.display = 'block';
     }
     // if (JSON.parse(localStorage.getItem('isPremiumUser'))) {
     //     document.getElementById('buy-premium').style.display = 'none';
@@ -61,7 +62,7 @@ document.getElementById('buy-premium').onclick = async function buyPremium(e) {
                 document.getElementById('buy-premium').style.display = 'none';
                 document.getElementById('premium-text').style.display = 'block';
                 // localStorage.setItem('isPremiumUser', true);
-                
+
             }
         }
     }
@@ -117,6 +118,12 @@ document.getElementById('show-leaderboard-button').onclick = async function () {
         console.log(err);
     }
 }
+ function generateReport() {
+    // alert('report generated');
+    window.location.href = 'report.html';
+}
+
 document.addEventListener("DOMContentLoaded", activatePremium);
+document.getElementById('generate-report-button').onclick = generateReport;
 
 

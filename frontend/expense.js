@@ -49,7 +49,7 @@ async function getAllExpenses() {
         const response = await fetch(`http://localhost:3000/expense/get-all-expense`, {
             method: 'GET',
             headers: {
-                'Authorization': token, 
+                'Authorization': token,
             }
         })
         if (!response.ok) {
@@ -57,6 +57,7 @@ async function getAllExpenses() {
         }
         const expenses = await response.json();
         // console.log(data);
+        
         expenses.map(expense => {
             showExpense(expense);
         })
@@ -67,8 +68,10 @@ async function getAllExpenses() {
 }
 
 //show expense
-function showExpense(expense){
-    const {id, amount, description, category} = expense;
+function showExpense(expense) {
+    const { id, amount, description, category } = expense;
+    let today = new Date();
+
     // console.log(id, amount, description, category);
     const expenseList = document.getElementById('expense-list');
 
@@ -77,7 +80,7 @@ function showExpense(expense){
     const textNode = document.createTextNode(`${amount} ${description} ${category} `);
     const delButton = document.createElement('button');
     delButton.textContent = 'delete';
-    delButton.addEventListener('click',deleteExpense);
+    delButton.addEventListener('click', deleteExpense);
 
     li.appendChild(textNode);
     li.appendChild(delButton);
@@ -86,19 +89,19 @@ function showExpense(expense){
 }
 
 //delete expense
-async function deleteExpense(event){
+async function deleteExpense(event) {
     const token = localStorage.getItem('token');
     // const userId = +localStorage.getItem('userId');
     const li = event.target.parentElement;
     const id = li.id;
-    try{
-        const response = await fetch(`http://localhost:3000/expense/${id}/`,{
-            method:'DELETE',
+    try {
+        const response = await fetch(`http://localhost:3000/expense/${id}/`, {
+            method: 'DELETE',
             headers: {
                 'Authorization': token,
             }
         });
-        if(!response.ok){
+        if (!response.ok) {
             throw new Error('error in deleting expense');
         }
         const data = await response.json();
@@ -108,7 +111,7 @@ async function deleteExpense(event){
         // console.log(li);
         alert('expense deleted successfully');
 
-    }catch(err){
+    } catch (err) {
         console.log(err);
     }
 }
