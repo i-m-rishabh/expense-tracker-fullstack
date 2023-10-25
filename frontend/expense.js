@@ -70,7 +70,7 @@ async function getAllExpenses() {
 //show expense
 function showExpense(expense) {
     const { id, amount, description, category } = expense;
-    let today = new Date();
+    // let today = new Date();
 
     // console.log(id, amount, description, category);
     const expenseList = document.getElementById('expense-list');

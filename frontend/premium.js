@@ -17,7 +17,7 @@ function activatePremium() {
     if (isPremiumUser) {
         document.getElementById('buy-premium').style.display = 'none';
         document.getElementById('premium-text').style.display = 'block';
-        document.getElementById('generate-report-button').style.display = 'block';
+        document.getElementById('download-report-button').style.display = 'block';
     }
     // if (JSON.parse(localStorage.getItem('isPremiumUser'))) {
     //     document.getElementById('buy-premium').style.display = 'none';
@@ -118,12 +118,27 @@ document.getElementById('show-leaderboard-button').onclick = async function () {
         console.log(err);
     }
 }
- function generateReport() {
+async function generateReport() {
     // alert('report generated');
-    window.location.href = 'report.html';
+    try {
+        const response = await fetch('http://localhost:3000/user/download/', {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        if (!response.ok) {
+            throw new Error('something wrong with getting download route');
+        }
+        const data = await response.json();
+        console.log(data);
+
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", activatePremium);
-document.getElementById('generate-report-button').onclick = generateReport;
+document.getElementById('download-report-button').onclick = generateReport;
 
 
