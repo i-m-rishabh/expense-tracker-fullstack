@@ -131,7 +131,13 @@ async function generateReport() {
             throw new Error('something wrong with getting download route');
         }
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
+
+        //creating a link having download url and clicking automatically
+        let link = document.createElement('a');
+        link.href = data.URL;
+        link.download = 'myexpense.csv';
+        link.click();
 
     } catch (error) {
         console.log(error);

@@ -86,67 +86,15 @@ async function downloadReport(req, res) {
         const expenses = await req.user.getExpenses();
         const stringifiedExpenses = JSON.stringify(expenses);
         // console.log(stringifiedExpenses);
-        const response = await uploadToS3('my-expense-tracker', stringifiedExpenses, 'expense.txt');
+        const response = await uploadToS3('my-expense-tracker', stringifiedExpenses, `expense-${req.user.id}-${new Date}.txt`);
         console.log(response);
-        res.status(200).json({success:true, response:response});
+        res.status(200).json({success:true, URL:response});
     } catch (err) {
         console.log('something went wrong: ', err);
         res.status(500).json({success:false,message:'something went wrong', error:err});
     }
 }
 
-// async function uploadToS3(filedata, filename) {
-//     AWS.config.update({
-//         accessKeyId: process.env.IAM_USER_ACCESS_KEY_ID,
-//         secretAccessKey: process.env.IAM_USER_SECRET_ACCESS_KEY,
-//         region: 'us-east-2',
-//     });
-
-//     const s3 = new AWS.S3();
-//     const params = {
-//         Bucket: 'my-expense-tracker',
-//         Key: filename,
-//         Body: filedata,
-//     };
-
-//     s3.upload(params, (err, data) => {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             console.log('file uploaded successfully: ', data);
-//         }
-//     });
-// }
-// function uploadToS3(filedata, filename) {
-
-    // let s3bucket = new AWS.S3({
-    //     accessKeyId: 'AKIAQXAEXCRXCHE5LRWA',// process.env.IAM_USER_ACCESS_KEY_ID,
-    //     secretAccessKey: '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',// process.env.IAM_USER_SECRET_ACCESS_KEY,
-    //     region: 'us-east-2',
-    //     httpOptions: {
-    //         timeout: 120000, // Set the timeout to 2 minutes (in milliseconds)
-    //     },
-    // });
-
-//     s3bucket.createBucket(function () {
-
-//         var params = {
-//             Bucket: 'my-expense-tracker',
-//             Key: 'expense',//filename,
-//             Body: 'hello this is small text',//filedata
-//         };
-//         s3bucket.upload(params, function (err, data) {
-//             if (err) {
-//                 console.log('error in callback');
-//                 console.log(err);
-
-//             } else {
-//                 console.log('success in getting data');
-//                 console.log(data);
-//             }
-//         });
-//     });
-// }
 
 async function uploadToS3 (BucketName, data, fileName) {
     const s3BucketName = BucketName;
