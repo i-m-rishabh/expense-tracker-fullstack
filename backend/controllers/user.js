@@ -88,7 +88,7 @@ async function downloadReport(req, res) {
         // console.log(stringifiedExpenses);
         const response = await uploadToS3('my-expense-tracker', stringifiedExpenses, 'expense.txt');
         console.log(response);
-        res.status(200).json({success:ture, response:response});
+        res.status(200).json({success:true, response:response});
     } catch (err) {
         console.log('something went wrong: ', err);
         res.status(500).json({success:false,message:'something went wrong', error:err});
@@ -150,8 +150,8 @@ async function downloadReport(req, res) {
 
 async function uploadToS3 (BucketName, data, fileName) {
     const s3BucketName = BucketName;
-    const IAM_USER_KEY = 'AKIAQXAEXCRXCHE5LRWA'//process.env.IAM_USER_ACCESS_KEY_ID;//process.env.IAM_USER_KEY;
-    const IAM_USER_SECRET = '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'//process.env.IAM_USER_SECRET_ACCESS_KEY;//process.env.IAM_USER_SECRET;
+    const IAM_USER_KEY = process.env.IAM_USER_ACCESS_KEY_ID;
+    const IAM_USER_SECRET = process.env.IAM_USER_SECRET_ACCESS_KEY;
     const s3bucket = new AWS.S3({
         accessKeyId: IAM_USER_KEY,
         secretAccessKey: IAM_USER_SECRET,
