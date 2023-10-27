@@ -1,7 +1,8 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const AWS = require('aws-sdk');
+const S3services = require('../services/S3services');
+// const AWS = require('aws-sdk');
 
 require('dotenv').config();
 
@@ -86,44 +87,19 @@ async function downloadReport(req, res) {
         const expenses = await req.user.getExpenses();
         const stringifiedExpenses = JSON.stringify(expenses);
         // console.log(stringifiedExpenses);
-        const response = await uploadToS3('my-expense-tracker', stringifiedExpenses, `expense-${req.user.id}-${new Date}.txt`);
-        console.log(response);
-        res.status(200).json({success:true, URL:response});
+        const response = await S3services.uploadToS3('my-expense-tracker', stringifiedExpenses, `expense-${req.user.id}-${new Date}.txt`);
+        // console.log(response);
+        await req.user.createFile({
+            name: `expense-${req.user.id}-${new Date}.txt`,
+            Url: response,
+            date: new Date, 
+        });
+        
+        res.status(200).json({ success: true, URL: response });
     } catch (err) {
         console.log('something went wrong: ', err);
-        res.status(500).json({success:false,message:'something went wrong', error:err});
+        res.status(500).json({ success: false, message: 'something went wrong', error: err });
     }
-}
-
-
-async function uploadToS3 (BucketName, data, fileName) {
-    const s3BucketName = BucketName;
-    const IAM_USER_KEY = process.env.IAM_USER_ACCESS_KEY_ID;
-    const IAM_USER_SECRET = process.env.IAM_USER_SECRET_ACCESS_KEY;
-    const s3bucket = new AWS.S3({
-        accessKeyId: IAM_USER_KEY,
-        secretAccessKey: IAM_USER_SECRET,
-        region: 'us-east-2',
-    });
-
-    const params = {
-        Bucket: s3BucketName,
-        Key: fileName,
-        Body: data,
-        ACL: 'public-read'
-    };
-
-    return new Promise((resolve, reject) => {
-        s3bucket.upload(params, (err, s3response) => {
-            if (err) {
-                console.log('error occured');
-                reject(err);
-            } else {
-                console.log('success');
-                resolve(s3response.Location);
-            }
-        });
-    });
 }
 
 module.exports = {

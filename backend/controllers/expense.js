@@ -16,11 +16,37 @@ async function getAllExpenses(req, res) {
     //         res.json({ "error in getting all expenses": err });
     //     })
     try {
+        let currentPage = +req.query.currentPage;
+
         const userId = req.user.id;
         console.log(userId);
 
         const expenses = await Expense.findAll({ where: { "userId": userId } })
-        res.status(200).json(expenses);
+        // res.status(200).json(expenses);
+
+        // here we have to implement pagination
+        let pageSize = 2;
+        let totalPages = Math.ceil(expenses.length / pageSize);
+        if (currentPage > totalPages || currentPage < 1) {
+            res.status(404).json({ success: false, message: 'page not exist' });
+        } else {
+            let startIndex = (currentPage - 1) * pageSize;
+            let endIndex = startIndex + pageSize;
+            let itemsToSend = expenses.slice(startIndex, endIndex);
+
+            let data = {
+                'hasNextpage': (currentPage < totalPages) ? true : false,
+                'hasPreviousPage': (currentPage > 1) ? true : false,
+                'currentPage': currentPage,
+                'lastPage': totalPages,
+                'previousPage': currentPage - 1,
+                'expenses': itemsToSend,
+            }
+
+            res.status(200).json({ success: true, response: data });
+        }
+
+
 
     } catch (err) {
         console.log(err);
@@ -128,10 +154,10 @@ async function deleteExpense(req, res) {
         if (expenses.length === 0) {
             res.status(400).json({ success: false, message: 'expense not found' });
         } else {
-            await user.update({ totalExpense: user.totalExpense - (expenses[0].amount) }, {transaction: t})
-            await user.removeExpense(expenses[0], {transaction: t});
+            await user.update({ totalExpense: user.totalExpense - (expenses[0].amount) }, { transaction: t })
+            await user.removeExpense(expenses[0], { transaction: t });
             res.status(200).json({ success: true, message: "successfully deleted" })
-            
+
             await t.commit();
         }
     } catch (err) {

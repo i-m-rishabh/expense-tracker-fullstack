@@ -7,6 +7,7 @@ const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
 const premiumRoutes = require('./routes/premium');
 const passwordRoutes = require('./routes/password');
+const fileRoutes = require('./routes/file');
 // const {associatedModels} = require('./models/associations');
 
 
@@ -19,6 +20,7 @@ app.use('/user',userRoutes);
 app.use('/expense', expenseRoutes);
 app.use('/premium', premiumRoutes);
 app.use('/password/', passwordRoutes);
+app.use('/file/', fileRoutes);
 
 (async function(){
     sequelize.sync()

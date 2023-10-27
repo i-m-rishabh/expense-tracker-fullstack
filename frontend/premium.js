@@ -61,6 +61,8 @@ document.getElementById('buy-premium').onclick = async function buyPremium(e) {
                 localStorage.setItem('token', newToken);
                 document.getElementById('buy-premium').style.display = 'none';
                 document.getElementById('premium-text').style.display = 'block';
+                document.getElementById('download-report-button').style.display = 'block';
+
                 // localStorage.setItem('isPremiumUser', true);
 
             }
@@ -134,10 +136,15 @@ async function generateReport() {
         // console.log(data);
 
         //creating a link having download url and clicking automatically
-        let link = document.createElement('a');
-        link.href = data.URL;
-        link.download = 'myexpense.csv';
-        link.click();
+        if (data.success) {
+            let link = document.createElement('a');
+            link.href = data.URL;
+            link.download = 'myexpense.csv';
+            link.click();
+        } else {
+            alert('some error occured');
+            throw new Error('something went wrong');
+        }
 
     } catch (error) {
         console.log(error);
