@@ -42,6 +42,13 @@ async function addExpense(event) {
 }
 
 async function generateExpenses() {
+    //when the page reload it automatically fetch the saved preference of the user if have any
+    let rowsPerPage = localStorage.getItem('rows_per_page');
+    if(rowsPerPage){
+        document.getElementById('rows-per-page').value = rowsPerPage;
+    }
+
+
     let currentPage = 1;
     let lastPage = 1;
     let p = '';
@@ -81,12 +88,13 @@ async function generateExpenses() {
 
 //get expense
 async function getAllExpenses(currentPage) {
+    let rowsPerPage = +localStorage.getItem('rows_per_page') || 1;
     const expenseList = document.getElementById('expense-list');
     expenseList.innerHTML = '';
     const token = localStorage.getItem('token');
     // const userId = +localStorage.getItem('userId');
     try {
-        const response = await fetch(`http://localhost:3000/expense/get-all-expense/?currentPage=${currentPage}`, {
+        const response = await fetch(`http://localhost:3000/expense/get-all-expense/?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -195,73 +203,16 @@ function showFiles(files) {
 
         li.appendChild(a);
         list.appendChild(li);
-    })
-    //     let files = [
-    //         'item1', 'item2', 'item3', 'item4', 'item5', 'item6', 'item7', 'item8', 'item9', 'item10', 'item11'
-    //     ];
-
-    //     const dataInOnePage = 3;
-    //     const noOfPages = Math.ceil(files.length / dataInOnePage);
-    //     const pages = [];
-
-    //     let count = 0;
-    //     let i = 0;
-    //     while (count < files.length) {
-    //         if (count + dataInOnePage < files.length) {
-    //             pages[i] = files.slice(count, count + dataInOnePage);
-    //         } else {
-    //             pages[i] = files.slice(count);
-    //         }
-    //         count = count + dataInOnePage;
-    //         i++;
-    //     }
-    //     console.log(pages);
-
-    //     let paginationButtons = document.getElementById('pagination-buttons');
-    //     let currentPage = 1;
-    //     const prevButton = document.createElement('button');
-    //     prevButton.textContent = '<'
-    //     prevButton.onclick = () => {
-    //         console.log(currentPage);
-    //         if (currentPage > 1) {
-    //             currentPage = currentPage - 1;
-    //             updatelist(currentPage, pages);
-    //         }
-
-    //     }
-    //     const nextButton = document.createElement('button');
-    //     nextButton.textContent = '>'
-    //     nextButton.onclick = () => {
-    //         console.log(currentPage);
-    //         if (currentPage < noOfPages) {
-    //             currentPage = currentPage + 1;
-    //             updatelist(currentPage, pages);
-    //         }
-    //     }
-    //     paginationButtons.appendChild(prevButton);
-
-    //     paginationButtons.appendChild(nextButton);
-    //     updatelist(1, pages);
-
-
+    })    
 }
 
-
-
-
-
-// function updatelist(currentPage, pages) {
-//     let currentcontent = pages[currentPage - 1];
-//     let list = document.getElementById('downloaded-file-list');
-//     list.innerHTML = '';
-
-//     currentcontent.map((file) => {
-//         let li = document.createElement('li');
-//         li.textContent = file;
-//         list.appendChild(li);
-//     })
-
-// }
+//setting rows per page 
+document.getElementById("rows-per-page").onchange = (event)=>{
+    let rows_per_page = event.target.value;
+    // console.log(rows_per_page);
+    localStorage.setItem('rows_per_page', rows_per_page);
+    location.reload();
+}
 
 function redirectToLogin() {
     window.location.replace('signin.html');

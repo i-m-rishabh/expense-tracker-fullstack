@@ -17,6 +17,7 @@ async function getAllExpenses(req, res) {
     //     })
     try {
         let currentPage = +req.query.currentPage;
+        let pageSize = +req.query.rowsPerPage;
 
         const userId = req.user.id;
         console.log(userId);
@@ -25,7 +26,6 @@ async function getAllExpenses(req, res) {
         // res.status(200).json(expenses);
 
         // here we have to implement pagination
-        let pageSize = 2;
         let totalPages = Math.ceil(expenses.length / pageSize);
         if (currentPage > totalPages || currentPage < 1) {
             res.status(404).json({ success: false, message: 'page not exist' });

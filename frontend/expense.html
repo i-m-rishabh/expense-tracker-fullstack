@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>daily expenses</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
+
 <body>
     <header></header>
     <main>
         <button id="buy-premium">Buy Premium</button>
-        <p id="premium-text" style="display: none;">Premium Member <button id="show-leaderboard-button">show leader board</button></p>
+        <p id="premium-text" style="display: none;">Premium Member <button id="show-leaderboard-button">show leader
+                board</button></p>
         <div id="leaderboard-section" style="display: none">
             <h3>Leaderboard</h3>
             <ul id="leaderboard-list"></ul>
@@ -51,11 +54,21 @@
             <br>
             <br>
             <button id="download-report-button" style="display: none;">Download Report</button>
+            <div>
+                <label for="rows-per-page">Rows Per Page: </label>
+                <select id="rows-per-page">
+                    <option value="1">1</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
             <ul id="expense-list"></ul>
             <div id="pagination-buttons"></div>
             <br>
             <ul id="downloaded-file-list"></ul>
-            
+
         </div>
 
     </main>
@@ -65,4 +78,5 @@
     <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
 
 </body>
+
 </html>
