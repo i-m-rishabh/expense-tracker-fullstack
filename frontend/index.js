@@ -55,16 +55,17 @@ async function loginUser(event) {
                 'Content-Type': 'application/json',
             }
         })
-        if (!response.ok) {
-            throw new Error('error in signing in ');
-        }
         const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data);
+        }
         // alert(data.token);
         localStorage.setItem('token', data.token);
         // localStorage.setItem('isPremiumUser', data.isPremiumUser);
         redirectToMainPage();
     } catch (err) {
         console.log(err)
+        alert(err);
     }
 }
 async function resetPassword(event) {

@@ -1,6 +1,11 @@
 
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const compression = require('compression');
+const morgan = require('morgan');
+const fs = require('fs');
+const path = require('path');
 
 const sequelize = require('./database/db');
 const userRoutes = require('./routes/user');
@@ -10,6 +15,8 @@ const passwordRoutes = require('./routes/password');
 const fileRoutes = require('./routes/file');
 // const {associatedModels} = require('./models/associations');
 
+//creating a write stream in append mode
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'});
 
 const app = express();
 app.use(cors());
@@ -22,11 +29,15 @@ app.use('/premium', premiumRoutes);
 app.use('/password/', passwordRoutes);
 app.use('/file/', fileRoutes);
 
+app.use(helmet());
+app.use(compression());
+app.use(morgan('combined', {stream: accessLogStream}));
+
 (async function(){
     sequelize.sync()
     .then(res=>{
         // associatedModels();
-        app.listen(3000, ()=>{
+        app.listen(process.env.PORT || 3000, ()=>{
             console.log('server started at port 3000');
         })
     })

@@ -77,6 +77,9 @@ async function generateExpenses() {
     }
 
     lastPage = await getAllExpenses(currentPage);
+    if(!lastPage){
+        lastPage = 1;
+    }
     buttonList.appendChild(prevButton);
     p = document.createElement('p');
     p.id = 'page-status';
