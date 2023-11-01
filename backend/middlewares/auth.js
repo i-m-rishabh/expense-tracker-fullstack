@@ -2,8 +2,12 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const authorization = async(req, res, next) => {
-    const token = req.header('Authorization');
+    try{
+        const token = req.header('Authorization');
     //verify the token 
+    if(!token){
+        throw new Error('not authorized');
+    }
     const decodedToken = jwt.verify(token, 'secret_key');
     // console.log(decodedToken.userId);
     User.findByPk(decodedToken.userId)
@@ -15,6 +19,9 @@ const authorization = async(req, res, next) => {
         console.log(err);
         res.json({success:false, response:'error in authorization', error:err});
     })
+    } catch(err){
+        res.json({success:false, message: err});
+    }
     
 }
 
