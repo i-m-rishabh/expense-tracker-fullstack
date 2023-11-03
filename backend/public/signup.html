@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>signup</title>
+</head>
+<body>
+    <header>
+        <h1>Expense Tracker</h1>
+    </header>
+    <main>
+        <fieldset>
+            <legend>
+                signup
+            </legend>
+            <form onsubmit="createUser(event)">
+                <div>
+                    <label for="username">username: </label>
+                    <input type="text" name="username" id="username" placeholder="john doe" required>
+                </div>
+                <div>
+                    <label for="email">email: </label>
+                    <input type="email" name="email" id="email" placeholder="john@gmail.com" required>                    
+                </div>
+                <div>
+                    <label for="phone">phone: </label>
+                    <input type="tel" name="phone" id="phone" placeholder="9100000000" required>
+                </div>                
+                <div>
+                    <label for="password">password: </label>
+                    <input type="password" name="password" id="password", placeholder="password" required>
+                </div>
+                <div>
+                    <button type="submit">create account</button>
+                </div>
+                <div>
+                    aleady have an account <button onclick="redirectToLogin()">LOGIN</button>
+                </div>
+            </form>
+        </fieldset>
+    </main>
+    <footer>
+        <p>&copy; rishabh pandey</p>
+    </footer>
+
+    <script src="index.js"></script>
+</body>
+</html>

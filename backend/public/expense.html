@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>daily expenses</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+
+<body>
+    <header></header>
+    <main>
+        <button id="buy-premium">Buy Premium</button>
+        <p id="premium-text" style="display: none;">Premium Member <button id="show-leaderboard-button">show leader
+                board</button></p>
+        <div id="leaderboard-section" style="display: none">
+            <h3>Leaderboard</h3>
+            <ul id="leaderboard-list"></ul>
+        </div>
+
+        <div class="new-expense">
+            <form action="" onsubmit="addExpense(event)">
+                <h3>Add Expense</h3>
+                <div>
+                    <label for="amount">amount </label>
+                    <input type="number" name="amount" id="amount" min="0" step="0.01">
+                </div>
+                <div>
+                    <label for="description">description</label>
+                    <input type="text" name="description" id="description">
+                </div>
+                <div>
+                    <label for="category">category</label>
+                    <select name="category" id="category">
+                        <option value="fuel">fule</option>
+                        <option value="food">food</option>
+                        <option value="others">others</option>
+                    </select>
+                </div>
+                <button type="submit">add expense</button>
+            </form>
+        </div>
+        <div>
+            <button onclick="redirectToLogin()">logout</button>
+        </div>
+
+        <!-- <div>
+            <br>
+            <br>
+            <button id="download-report-button">download report</button>
+        </div> -->
+        <div class="">
+            <br>
+            <br>
+            <button id="download-report-button" style="display: none;">Download Report</button>
+            <div>
+                <label for="rows-per-page">Rows Per Page: </label>
+                <select id="rows-per-page">
+                    <option value="1">1</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+            <ul id="expense-list"></ul>
+            <div id="pagination-buttons"></div>
+            <br>
+            <ul id="downloaded-file-list"></ul>
+
+        </div>
+
+    </main>
+    <footer></footer>
+    <script src="expense.js"></script>
+    <script src="premium.js"></script>
+    <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
+
+</body>
+
+</html>

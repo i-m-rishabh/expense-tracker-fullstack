@@ -29,6 +29,12 @@ app.use('/premium', premiumRoutes);
 app.use('/password/', passwordRoutes);
 app.use('/file/', fileRoutes);
 
+//serving frontend files
+app.use((req, res)=>{
+    // res.sendFile(path.join(__dirname, 'public/signin.html'));
+    res.sendFile(path.join(__dirname, `public/${req.url}`));
+})
+
 app.use(helmet());
 app.use(compression());
 app.use(morgan('combined', {stream: accessLogStream}));
