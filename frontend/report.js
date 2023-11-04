@@ -3,7 +3,7 @@
 //         const token = localStorage.getItem('token');
 
 //         try {
-//             const response = await fetch('http://13.51.13.17:3000/expense/get-all-expense', {
+//             const response = await fetch('http://13.48.153.222:3000/expense/get-all-expense', {
 //                 method: 'GET',
 //                 headers: {
 //                     'Authorization': token,

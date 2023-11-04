@@ -13,7 +13,7 @@ async function addExpense(event) {
     // alert([amount,description,category]);
 
     try {
-        const response = await fetch('http://13.51.13.17:3000/expense/add-expense', {
+        const response = await fetch('http://13.48.153.222:3000/expense/add-expense', {
             method: 'POST',
             body: JSON.stringify({
                 // userId,
@@ -97,7 +97,7 @@ async function getAllExpenses(currentPage) {
     const token = localStorage.getItem('token');
     // const userId = +localStorage.getItem('userId');
     try {
-        const response = await fetch(`http://13.51.13.17:3000/expense/get-all-expense/?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`, {
+        const response = await fetch(`http://13.48.153.222:3000/expense/get-all-expense/?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`, {
             method: 'GET',
             headers: {
                 'Authorization': token,
@@ -153,7 +153,7 @@ async function deleteExpense(event) {
     const li = event.target.parentElement;
     const id = li.id;
     try {
-        const response = await fetch(`http://13.51.13.17:3000/expense/${id}/`, {
+        const response = await fetch(`http://13.48.153.222:3000/expense/${id}/`, {
             method: 'DELETE',
             headers: {
                 'Authorization': token,
@@ -176,7 +176,7 @@ async function deleteExpense(event) {
 
 async function getAllFiles() {
     try {
-        const response = await fetch('http://13.51.13.17:3000/file/getAllFiles', {
+        const response = await fetch('http://13.48.153.222:3000/file/getAllFiles', {
             method: 'GET',
             headers: {
                 'Authorization': token,

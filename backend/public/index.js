@@ -9,7 +9,7 @@ async function createUser(event) {
     const password = event.target.password.value;
 
     try {
-        const response = await fetch('http://13.51.13.17:3000/user/signup', {
+        const response = await fetch('http://13.48.153.222:3000/user/signup', {
             method: 'POST',
             body: JSON.stringify({
                 username,
@@ -45,7 +45,7 @@ async function loginUser(event) {
     // alert([email, password])
 
     try {
-        const response = await fetch('http://13.51.13.17:3000/user/signin', {
+        const response = await fetch('http://13.48.153.222:3000/user/signin', {
             method: 'POST',
             body: JSON.stringify({
                 email: email,
@@ -77,7 +77,7 @@ async function resetPassword(event) {
 
     //calling api
     try {
-        const response = await fetch('http://13.51.13.17:3000/password/forget-password', {
+        const response = await fetch('http://13.48.153.222:3000/password/forget-password', {
             method: 'POST',
             body: JSON.stringify({
                 email: email
