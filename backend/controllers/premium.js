@@ -9,8 +9,8 @@ const sequelize = require('../database/db');
 const purchasePremium = (req, res) => {
     try {
         const rzp = new Razorpay({
-            key_id: process.env.key_id,
-            key_secret: process.env.key_secret,
+            key_id: process.env.KEY_ID,
+            key_secret: process.env.KEY_SECRET,
         });
 
         var options = {
@@ -24,7 +24,7 @@ const purchasePremium = (req, res) => {
             }
             req.user.createOrder({order_id:order.id, status:'PENDING'})
             .then(()=>{
-                return res.status(201).json({order,key_id: process.env.key_id});
+                return res.status(201).json({order,key_id: process.env.KEY_ID});
             })
         })
 
