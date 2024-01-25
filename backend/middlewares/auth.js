@@ -10,7 +10,7 @@ const authorization = async(req, res, next) => {
     }
     const decodedToken = jwt.verify(token, 'secret_key');
     // console.log(decodedToken.userId);
-    User.findByPk(decodedToken.userId)
+    User.findById(decodedToken.userId)
     .then(user => {
         req.user = user;
         next();

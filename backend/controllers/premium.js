@@ -3,8 +3,6 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
 const Order = require('../models/order');
-//adding transactions
-const sequelize = require('../database/db');
 
 const purchasePremium = (req, res) => {
     try {
@@ -22,12 +20,17 @@ const purchasePremium = (req, res) => {
             if(err){
                 throw new Error(JSON.stringify(err));
             }
-            req.user.createOrder({order_id:order.id, status:'PENDING'})
-            .then(()=>{
-                return res.status(201).json({order,key_id: process.env.key_id});
+            
+            let newOrder = new Order({
+                userId: req.user._id,
+                order_id: order.id,
+                status: 'PENDING',
             })
+            newOrder.save()
+                .then(()=>{
+                 return res.status(201).json({order,key_id: process.env.key_id});
+                })
         })
-
     } catch (err) {
         console.log(err);
         res.status(500).json({ success: false, message: 'error in purchasing premium', error: err });
@@ -35,23 +38,21 @@ const purchasePremium = (req, res) => {
 }
 
 async function updatePaymentStatus(req, res){
-    const t = await sequelize.transaction();
-    try{
-        const {order_id, payment_id} = req.body;
-        const order = await Order.findOne({where:{order_id}}, {transaction: t})
-    
-        const [response1, response2] = await Promise.all([
-            order.update({payment_id:payment_id, status:'SUCCESSFUL'}, {transaction: t}),
-            req.user.update({isPremiumUser:true}),
-        ]);
-        await t.commit();
-        res.status(200).json({success:true, message:'successfully purchased premium membership', token: jwt.sign({ userId: req.user.id, isPremiumUser:true }, 'secret_key') });
+   
 
-    }catch(err){
-        console.log(err);
-        await t.rollback();
-        res.status(500).json({success:false, message:'error in updating status', error: err});
-    }
+        const {order_id, payment_id} = req.body;
+        Order.updateOne({order_id: order_id}, {$set: {payment_id: payment_id, status: 'SUCCESSFUL'}})
+            .then(()=>{
+                req.user.isPremiumUser = true;
+                return req.user.save();
+            })
+            .then(()=>{
+                res.status(200).json({success:true, message:'successfully purchased premium membership', token: jwt.sign({ userId: req.user.id, isPremiumUser:true }, 'secret_key') });
+            })
+            .catch(err=>{
+                console.log('error in updating payment status', err);
+                res.status(500).json({success:false, message:'error in updating status', error: err});
+            })
 }
 
 module.exports = {

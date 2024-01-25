@@ -158,7 +158,7 @@ async function deleteExpense(event) {
             headers: {
                 'Authorization': token,
             }
-        });
+        }); 
         if (!response.ok) {
             throw new Error('error in deleting expense');
         }

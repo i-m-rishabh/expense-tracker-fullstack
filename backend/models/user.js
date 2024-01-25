@@ -1,50 +1,35 @@
-const sequelize = require('../database/db');
-const Sequelize = require('sequelize');
 
-const Expense = require('./expense');
-const Order = require('./order');
-const File = require('./downloadedExpenseFiles');
-const forgetPasswordRequest = require('./forgetPasswordRequests');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const User = sequelize.define('user',{
-    username:{
-        type:Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-    },
-    email:{
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-    },
-    phone:{
-        type:Sequelize.STRING,
-        allowNull: false,
-    },
-    password:{
-        type:Sequelize.STRING,
-        allowNull: false,
-    },
-    isPremiumUser:{
-        type:Sequelize.BOOLEAN,
-        allowNull: true,
-    },
-    totalExpense:{
-        type:Sequelize.INTEGER,
-        allowNull: true,
-    },
+const userSchema = new Schema({
+            username:{
+                type:String, 
+                required: true,
+                
+            },
+            email:{
+                type: String,
+                required: true, 
+                
+            },
+            phone:{
+                type:String,
+                required: true,
+            },
+            password:{
+                type:String,
+                required: true,
+            },
+            isPremiumUser:{
+                type:Boolean,
+                required: false,
+            },
+            totalExpense:{
+                type:Number,
+                required: false,
+            },
+            
 });
 
-User.hasMany(Expense);
-Expense.belongsTo(User);
-
-User.hasMany(Order);
-Order.belongsTo(User);
-
-User.hasMany(forgetPasswordRequest);
-forgetPasswordRequest.belongsTo(User);
-
-User.hasMany(File);
-File.belongsTo(User);
-
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);

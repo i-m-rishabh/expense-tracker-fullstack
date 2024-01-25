@@ -6,10 +6,11 @@ require('dotenv').config();
 const User = require('../models/user');
 const forgetPasswordRequest = require('../models/forgetPasswordRequests');
 const { v4: uuidv4 } = require('uuid');
+const ForgetPasswordRequest = require('../models/forgetPasswordRequests');
 
 const sendResetLink = async (uuid) => {
     const email = req.body.email;
-    console.log(email);
+    // console.log(email);
 
     const client = Sib.ApiClient.instance;
     const apiKey = client.authentications['api-key']
@@ -47,24 +48,20 @@ const forgetPassword = async (req, res) => {
     try {
         const email = req.body.email;
 
-        const user = await User.findOne({ where: { email: email } })
+        const user = await User.findOne({ email: email })
 
-        // const userId = user.id;
-        //changing it to uuid its secure
-        // const uuid = Math.random();
         const uuid = uuidv4();
-        console.log(uuid);
-
-        const response = await user.createForgetPasswordRequest({
+        
+        const request = new ForgetPasswordRequest({
             id: uuid,
             isActive: true,
+            userId: req.user._id,
         })
+
+        await request.save();
 
         await sendResetLink(uuid);
         res.status(200).json({ success: true, message: 'password successfully sent to you mail. check you inbox' });
-
-        // res.status(200).json({success: true});
-
 
     } catch (err) {
         console.log(err);
@@ -76,7 +73,7 @@ const resetPassword = async (req, res) => {
     const uuid = req.params.uuid;
     // console.log(uuid);
     try {
-        const request = await forgetPasswordRequest.findOne({ where: { id: uuid } })
+        const request = await ForgetPasswordRequest.findOne({ id: uuid })
         const form = `
         <form action='/password/reset-password/${uuid}', method='POST'>
             <label>new Password </label>
@@ -98,27 +95,22 @@ const resetPassword = async (req, res) => {
 const changePassword = async (req, res) => {
     const uuid = req.params.uuid;
     const newPassword = req.body.newPassword;
-    // console.log(uuid);
-    // console.log(newPassword);
 
-    const t = await sequelize.transaction();
     try {
-        const request = await forgetPasswordRequest.findOne({ where: { id: uuid } })
+        const request = await ForgetPasswordRequest.findOne({ id: uuid })
         if (request.isActive) {
             //update status
-            await request.update({isActive:false },{ transaction:t});
+            request.isActive = false,
+            await request.save();
             //also update password
-            const user = await User.findOne({where:{id:request.userId}});
-
-            await user.update({password: await encryptPassword(newPassword)},{transaction:t});
+            req.user.password = await encryptPassword(newPassword);
+            await req.user.save();
             res.status(200).json({ success: true, message: 'password updated successfully' });
         } else {
             res.status(500).json({ success: false, message: 'link is expired. Request a new one.' });
         }
-        await t.commit();
     } catch (err) {
-        await t.rollback();
-        console.log(err);
+        console.log('error in updating user password', err);
         res.status(500).json({ success: false, message: 'error in updating password', error: err });
     }
 }
