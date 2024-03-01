@@ -1,3 +1,6 @@
+// const serverEndPoint = 'http://localhost:3000';
+const serverEndPoint = 'https://expense-tracker-fullstack.onrender.com';
+
 //sign up page ................................................................................. 
 
 async function createUser(event) {
@@ -9,7 +12,7 @@ async function createUser(event) {
     const password = event.target.password.value;
 
     try {
-        const response = await fetch('http://localhost:3000/user/signup', {
+        const response = await fetch(`${serverEndPoint}/user/signup`, {
             method: 'POST',
             body: JSON.stringify({
                 username,
@@ -45,7 +48,7 @@ async function loginUser(event) {
     // alert([email, password])
 
     try {
-        const response = await fetch('http://localhost:3000/user/signin', {
+        const response = await fetch(`${serverEndPoint}/user/signin`, {
             method: 'POST',
             body: JSON.stringify({
                 email: email,
@@ -77,7 +80,7 @@ async function resetPassword(event) {
 
     //calling api
     try {
-        const response = await fetch('http://localhost:3000/password/forget-password', {
+        const response = await fetch(`${serverEndPoint}/password/forget-password`, {
             method: 'POST',
             body: JSON.stringify({
                 email: email

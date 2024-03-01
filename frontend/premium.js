@@ -1,3 +1,5 @@
+// const serverEndPoint = 'http://localhost:3000';
+const serverEndPoint = 'https://expense-tracker-fullstack.onrender.com';
 
 const token = localStorage.getItem('token');
 
@@ -26,7 +28,7 @@ function activatePremium() {
 }
 
 document.getElementById('buy-premium').onclick = async function buyPremium(e) {
-    const response1 = await fetch('http://localhost:3000/premium/purchase_membership', {
+    const response1 = await fetch('${serverEndPoint}/premium/purchase_membership', {
         method: 'GET',
         headers: {
             'Authorization': token
@@ -40,7 +42,7 @@ document.getElementById('buy-premium').onclick = async function buyPremium(e) {
         "order_id": data.order.id,
         "handler": async function (response) {
             // alert(['paymentId', response.razorpay_payment_id]);
-            const response2 = await fetch('http://localhost:3000/premium/updatePaymentStatus', {
+            const response2 = await fetch(`${serverEndPoint}/premium/updatePaymentStatus`, {
                 method: 'POST',
                 body: JSON.stringify({
                     order_id: data.order.id,
@@ -75,7 +77,7 @@ document.getElementById('buy-premium').onclick = async function buyPremium(e) {
 
     rzp1.on('payment_failed', async function (response) {
         //control doesn't come here when make payment fail ?
-        // const response2 = await fetch('http://localhost:3000/premium/updatePaymentStatus', {
+        // const response2 = await fetch(`${serverEndPoint}/premium/updatePaymentStatus`, {
         //     method: 'POST',
         //     body: JSON.stringify({
         //         order_id: data.order.id,
@@ -92,7 +94,7 @@ document.getElementById('buy-premium').onclick = async function buyPremium(e) {
 }
 document.getElementById('show-leaderboard-button').onclick = async function () {
     try {
-        const response = await fetch('http://localhost:3000/user/get-all-users')
+        const response = await fetch(`${serverEndPoint}/user/get-all-users`)
         if (!response.ok) {
             throw new Error('eror in getting users total expenses');
         }
@@ -123,7 +125,7 @@ document.getElementById('show-leaderboard-button').onclick = async function () {
 async function generateReport() {
     // alert('report generated');
     try {
-        const response = await fetch('http://localhost:3000/user/download/', {
+        const response = await fetch(`${serverEndPoint}/user/download/`, {
             method: 'GET',
             headers: {
                 'Authorization': token,

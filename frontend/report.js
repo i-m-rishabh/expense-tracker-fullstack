@@ -1,9 +1,12 @@
+// const serverEndPoint = 'http://localhost:3000';
+// const serverEndPoint = 'https://expense-tracker-fullstack.onrender.com';
+
 // async function showReport() {
 //     try {
 //         const token = localStorage.getItem('token');
 
 //         try {
-//             const response = await fetch('http://localhost:3000/expense/get-all-expense', {
+//             const response = await fetch(`${serverEndPoint}/expense/get-all-expense`, {
 //                 method: 'GET',
 //                 headers: {
 //                     'Authorization': token,
