@@ -35,7 +35,7 @@ const sendResetLink = async (uuid) => {
         to: receivers,
         subject: 'forget password',
         // textContent: ` your password is  `,
-        htmlContent: ` <h1> reset your password </h1> <a href='http://localhost:3000/password/reset-password/${uuid}'> click here</a>`,
+        htmlContent: ` <h1> reset your password </h1> <a href='${serverEndPoint}/password/reset-password/${uuid}'> click here</a>`,
         params: {
             uuid: uuid,
         }
